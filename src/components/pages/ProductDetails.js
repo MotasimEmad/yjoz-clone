@@ -9,19 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import { DateRangePicker } from '@mui/x-date-pickers-pro';
 
 
-
 const ProductDetails = () => {
-   
     const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-
 
     const handleDateRangeChange = (newDateRange) => {
         setSelectedDateRange(newDateRange);
         setStartDate(newDateRange[0]);
         setEndDate(newDateRange[1]);
-      };
+    };
 
     const navigate = useNavigate();
     const { product_details, isLoadingProductDetails, suggested_products, isLoadingSuggestedProducts } = useSelector((state) => state.popular);
@@ -31,17 +28,22 @@ const ProductDetails = () => {
 
     useEffect(() => {
         dispatch(getProductDetails(location.state.id));
-        dispatch(getSuggestedProducts(SuggestedProductsData));
-    }, [dispatch]);
+      }, [dispatch, location.state.id]);
 
-    const SuggestedProductsData = {
-        'product_id': product_details ? product_details.id : null,
-        'sub_category_id': product_details.category ? product_details.category.sub_categories[0].id : null 
-    };
+    useEffect(() => {
+        if (product_details) {
+          const SuggestedProductsData = {
+            'product_id': product_details.id ?? null,
+            'sub_category_id': (product_details.category?.sub_categories[0]?.id) ?? null,
+          };
+    
+          dispatch(getSuggestedProducts(SuggestedProductsData));
+        }
+      }, [dispatch, product_details]);
 
     const handleProductClick = (id, image) => {
         navigate(`/product/${id}`, { state: { id: id, image: image} });
-      };
+    };
 
     const suggestedList = suggested_products.length > 0 ? suggested_products.map((product) => (
         <div onClick={() => handleProductClick(product.id, product.images[0])}>
@@ -52,16 +54,15 @@ const ProductDetails = () => {
     
     const productImages = product_details.images
   ? product_details.images.map((image, index) => (
-      <img key={index} src={image} alt="" className='mx-2 w-24 h-24 rounded-md cursor-pointer' onClick={() => setActiveImage(image)} />
+      <img key={index} src={image} alt='image' className='mx-2 w-24 h-24 rounded-md cursor-pointer' onClick={() => setActiveImage(image)} />
     ))
   : null;
 
     const prices = product_details.prices;
 
     const handleOrderClick = (data) => {
-        console.log(data);
+        {localStorage.getItem('token') ? navigate(`/checkout`, { state: { data: data } }) : navigate(`/login`)}
     };
-
 
     return (
         <div>
@@ -136,18 +137,18 @@ const ProductDetails = () => {
                                     <PriceCard label="+30 Days" price={product_details.prices ? prices.month_price : null} />
                                 </div>
 
-                                <DateRangePicker
-        value={selectedDateRange}
-        onChange={handleDateRangeChange}
-        startText="Start Date"
-        endText="End Date"
-      />
-                                   <Button onClick={() => handleOrderClick({
-                                    'product_id': product_details.id,
-                                    'start_date': startDate['$d'],
-                                    'end_date': endDate['$d'],
-                                   
-                                })} label="Book Now" style="rounded-2xl bg-primary text-white px-4 py-2 mt-6"></Button>
+                                    <DateRangePicker
+                                        value={selectedDateRange}
+                                        onChange={handleDateRangeChange}
+                                        startText="Start Date"
+                                        endText="End Date"
+                                        />
+                                    <Button onClick={() => handleOrderClick({
+                                        'product_id': product_details.id,
+                                        'start_date': startDate['$d'].toISOString() ?? null,
+                                        'end_date': endDate['$d'].toISOString() ?? null,
+                                        'method_of_receiving': 'pick_up'
+                                    })} label="Book Now" style="rounded-2xl bg-primary text-white px-4 py-2 mt-6"></Button>
                             </div>
                         </div>
                     </div>
@@ -165,4 +166,3 @@ const ProductDetails = () => {
   };
   
   export default ProductDetails;
-  

@@ -7,17 +7,34 @@ import NavBar from './components/molecules/NavBar';
 import Footer from './components/organisms/Footer';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import CheckOutPage from './components/pages/CheckOutPage';
+import LoginPage from './components/pages/LoginPage';
+import SignUpStepOnePage from './components/pages/SignUpStepOnePage';
+import SignUpStepTwoPage from './components/pages/SignUpStepTwoPage';
+import ProfilePage from './components/pages/ProfilePage';
 
 function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
        <div className='font-ubuntu'>
-      <NavBar />
        <Router>
-       <Routes>
+        <NavBar />
+       <Routes>      
           <Route exact path="/" element={<HomePage />} />            
           <Route path="/sub-categories" element={<SubCategoriesPage />} />    
-          <Route path="/product/:id" element={<ProductDetails />} />         
+          <Route path="/product/:id" element={<ProductDetails />} />    
+          <Route path="/checkout" element={<CheckOutPage />} />       
+
+
+          {/* Auth routes */}
+          <Route path="/login" element={<LoginPage />} />        
+          <Route path="/signup-step-1" element={<SignUpStepOnePage />} />       
+          <Route path="/signup-step-2" element={<SignUpStepTwoPage />} />    
+
+          {/* Profile routes */}
+          <Route path="/profile" element={<ProfilePage />} />       
+
+
        </Routes>
     </Router>
     <Footer />

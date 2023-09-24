@@ -22,7 +22,7 @@ export const getProductDetails = createAsyncThunk('popular/getProductDetails', a
     }
 });
 
-export const getSuggestedProducts = createAsyncThunk('popular/getSuggestedProducts', async (SuggestedProductsData, thunkAPI) => {
+export const getSuggestedProducts = createAsyncThunk('popular/getSuggestedProducts', async (bodyData, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
       const response = await fetch('https://dev.yjoz.com/api/v3/get_suggested_products', {
@@ -31,7 +31,7 @@ export const getSuggestedProducts = createAsyncThunk('popular/getSuggestedProduc
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify(SuggestedProductsData), // Replace with your request data
+        body: JSON.stringify(bodyData), // Replace with your request data
       });
   
       if (!response.ok) {
