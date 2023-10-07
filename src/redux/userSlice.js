@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-
 export const getUserProfile = createAsyncThunk('user/getUserProfile', async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
 
@@ -22,7 +21,7 @@ export const getUserProfile = createAsyncThunk('user/getUserProfile', async (_, 
   export const getUserProducts = createAsyncThunk('user/getUserProducts', async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI;
     try {
-      const response = await fetch('https://dev.yjoz.com/api/v3/user_products', {
+      const response = await fetch(`https://dev.yjoz.com/api/v3/user_products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +43,7 @@ export const getUserProfile = createAsyncThunk('user/getUserProfile', async (_, 
 
 const userSlice = createSlice({
     name: "user",
-    initialState: { user: {}, isLoading: false, error: null , user_products: []},
+    initialState: { user: {}, isLoading: false, error: null , user_products: [], pagination: {}},
     extraReducers: {
         [getUserProfile.pending]: (state, action) => {
             state.isLoading = true;
@@ -67,6 +66,7 @@ const userSlice = createSlice({
       [getUserProducts.fulfilled]: (state, action) => {
           state.isLoading = false;
           state.user_products = action.payload.data;
+          state.pagination = action.payload.pagination;
       },
       [getUserProducts.rejected]: (state, action) => {
           state.isLoading = false;

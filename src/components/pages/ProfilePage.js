@@ -1,18 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProducts, getUserProfile } from '../../redux/userSlice';
 import ProductCard from '../atoms/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import Pagination from '../molecules/Pagination';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-    const { user, isLoading, error, user_products } = useSelector((state) => state.user);
+    const { user, isLoading, user_products, pagination } = useSelector((state) => state.user);
+
+    const [currentPage, setCurrentPage] = useState(pagination.current_page);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
+    const  lastPage = pagination.last_page;
 
     const dispatch = useDispatch();
     useEffect(() => {
       dispatch(getUserProfile());
       dispatch(getUserProducts());
-    }, [dispatch]);
+    }, [dispatch, currentPage]);
 
     const productList = user_products.map((product) => (
         <div onClick={() => handleProductClick(product.id, product.images[0])}>
@@ -20,14 +25,22 @@ const ProfilePage = () => {
         </div>
       ));
 
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    const currentItems = productList.slice(firstItemIndex, lastItemIndex);
+
     const coverImage = {
         backgroundImage: `url(${user?.cover_image})`
     };
 
     const handleProductClick = (id, image) => {
-        // navigate(`/product/${id}`, { state: { id: id, image: image} });
-      };
+        navigate(`/product/${id}`, { state: { id: id, image: image} });
+    };
 
+    const handleAddItemClick = (id, image) => {
+        navigate(`/add-item`);
+    };
+    
     return (
         <div>
             {user ? <main class="flex-1 overflow-y-auto">
@@ -62,7 +75,7 @@ const ProfilePage = () => {
                             <h1 class="text-lg font-medium text-gray-700 capitalize sm:text-xl">Items</h1>
                         </div>
 
-                        <a href="#" class="flex items-center justify-center w-full px-2 py-2 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-primary rounded-md md:w-auto md:mt-0 hover:bg-secondray focus:ring focus:ring-primary focus:ring-opacity-50">
+                        <a onClick={handleAddItemClick} class="flex items-center justify-center w-full px-2 py-2 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-primary rounded-md md:w-auto md:mt-0 hover:bg-secondray focus:ring focus:ring-primary focus:ring-opacity-50 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                             </svg>
@@ -71,8 +84,15 @@ const ProfilePage = () => {
                     </div>
 
                     <div class="grid gap-4 mt-6 grid-cols-1s xl:grid-cols-4">
-                        {isLoading ? "loading ..." : productList}
+                        {isLoading ? "loading ..." : currentItems}
                     </div>
+                    <Pagination
+                        totalItems={productList.length}
+                        itemsPerPage={itemsPerPage}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        lastPage={lastPage}
+                    />
                 </div>
             </main> : <div>Loading ...</div>}
         </div>

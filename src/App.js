@@ -12,6 +12,7 @@ import LoginPage from './components/pages/LoginPage';
 import SignUpStepOnePage from './components/pages/SignUpStepOnePage';
 import SignUpStepTwoPage from './components/pages/SignUpStepTwoPage';
 import ProfilePage from './components/pages/ProfilePage';
+import AddProductPage from './components/pages/AddProductPage';
 
 function App() {
   return (
@@ -22,7 +23,6 @@ function App() {
        <Routes>      
           <Route exact path="/" element={<HomePage />} />            
           <Route path="/sub-categories" element={<SubCategoriesPage />} />    
-          <Route path="/product/:id" element={<ProductDetails />} />    
           <Route path="/checkout" element={<CheckOutPage />} />       
 
 
@@ -35,6 +35,9 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />       
 
 
+        {/* Products routes */}
+        <Route path="/product/:id" element={<ProductDetails />} />    
+        <Route path="/add-item" element={<AddProductPage />} />    
        </Routes>
     </Router>
     <Footer />

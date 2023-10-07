@@ -24,8 +24,8 @@ function ProductCard({ src, title, price, tag }) {
                       <div class="flex flex-wrap ">
                         
                       <h2 class="text-gray-700 text-sm capitalize">
-                            {title}
-                          </h2>
+                        {title}
+                      </h2>
                       </div>
                       <div class="flex items-center w-full justify-between mt-6">
                       <div class="text-sm text-gray-500 mt-1">AED {price}/day</div>

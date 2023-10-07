@@ -105,7 +105,7 @@ const ProductDetails = () => {
                                             <img src='https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=880&h=880&q=100' className='object-cover w-16 h-16 rounded-full' />
                                         </div>
                                         <div>
-                                            <p className='mx-4 text-gray-500 text-sm capitalize mt-6 font-normal'>I'm a wedding and portrait photographer. Just renting out some of my gear so other people can create with them when I'm not using it.</p>
+                                            <p className='mx-4 text-gray-500 text-sm capitalize mt-6 font-normal'>{product_details.owner ? product_details.owner.about_me : null}</p>
                                         </div>
                                     </div>
 
